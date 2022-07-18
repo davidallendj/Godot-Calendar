@@ -143,15 +143,19 @@ func setup_day_buttons():
 #	print("weekday for {month}/{day}/{year}: ".format(date), get_weekday(date))
 	clear_buttons()
 	var iter = 1
-	for i in range(first_weekday_month, first_weekday_month+days_in_month):
-		var button = days.get_child(7+i) # +7 for labels
-		button.set_text(str(iter))
-		if button.is_connected("pressed", self, "emit_signal"):
-			button.disconnect("pressed", self, "emit_signal")
-		button.connect("pressed", self, "emit_signal", ["date_selected", {"day": iter, "month": month, "year": year}])
-		if i == day:
-			button.set_pressed(true)
-		iter += 1
+	for i in range (7, days.get_child_count()):
+		var button = days.get_child(i)
+		if i >= first_weekday+7 and i < first_weekday+days_in_month+7:
+			button.set_text(str(iter))
+			if button.is_connected("pressed", self, "emit_signal"):
+				button.disconnect("pressed", self, "emit_signal")
+			button.connect("pressed", self, "emit_signal", ["date_selected", {"day": iter, "month": month, "year": year}])
+			if i == day:
+				button.set_pressed(true)
+			iter += 1
+			button.set_disabled(false)
+		else:
+			button.set_disabled(true)
 
 
 func clear_buttons():
